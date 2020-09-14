@@ -1,65 +1,9 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import App from './App';
-import { fetchShow as mockFetchShows } from './api/fetchShow';
+import { render, screen } from '@testing-library/react';
+import Episodes from './Episodes';
 
-
-const showData = {
-    data:
-        {
-        id: 2993,
-        url: 'http://www.tvmaze.com/shows/2993/stranger-things',
-        name: 'Stranger Things',
-        type: 'Scripted',
-        language: 'English',
-        genres: [
-          'Drama',
-          'Fantasy',
-          'Science-Fiction'
-        ],
-        status: 'Running',
-        runtime: 60,
-        premiered: '2016-07-15',
-        officialSite: 'https://www.netflix.com/title/80057281',
-        schedule: {
-          time: '',
-          days: [
-            'Thursday'
-          ]
-        },
-        rating: {
-          average: 8.7
-        },
-        weight: 98,
-        network: null,
-        webChannel: {
-          id: 1,
-          name: 'Netflix',
-          country: null
-        },
-        externals: {
-          tvrage: 48493,
-          thetvdb: 305288,
-          imdb: 'tt4574334'
-        },
-        image: {
-          medium: 'http://static.tvmaze.com/uploads/images/medium_portrait/200/501942.jpg',
-          original: 'http://static.tvmaze.com/uploads/images/original_untouched/200/501942.jpg'
-        },
-        summary: '<p>A love letter to the \'80s classics that captivated a generation, <b>Stranger Things</b> is set in 1983 Indiana, where a young boy vanishes into thin air. As friends, family and local police search for answers, they are drawn into an extraordinary mystery involving top-secret government experiments, terrifying supernatural forces and one very strange little girl.</p>',
-        updated: 1599468817,
-        _links: {
-          self: {
-            href: 'http://api.tvmaze.com/shows/2993'
-          },
-          previousepisode: {
-            href: 'http://api.tvmaze.com/episodes/1576476'
-          }
-        },
-        _embedded: {
-          episodes: [
-            {
+const episodesData = [
+    {
               id: 553946,
               url: 'http://www.tvmaze.com/episodes/553946/stranger-things-1x01-chapter-one-the-vanishing-of-will-byers',
               name: 'Chapter One: The Vanishing of Will Byers',
@@ -122,31 +66,19 @@ const showData = {
                 }
               }
             },
-          ]
-        }
-      }  
-  };
+]
 
-  jest.mock('./api/fetchShow');
-// console.log(mockFetchShows)
-mockFetchShows.mockResolvedValueOnce({showData})
 
 test('Renders without errors', () => {
-    render(<App />);
+    render(<Episodes episodes={[]} />);
 });
 
-test('Render episodes when API is called', async () => {
-    // mockFetchShows.mockResolvedValueOnce(showData)
-    render(<App />);
+test('Renders with props', () => {
+    const { rerender } = render(<Episodes episodes={[]} />);
 
-    const movieTitle = screen.getByText(/stranger things/i)
-    
-    // const dropdown = screen.queryByDisplayValue(/select a season/i)
+    rerender(<Episodes episodes={episodesData} />)
 
-    // userEvent.click(dropdown);
+    const episodes = screen.getAllByTestId(/episode/i)
 
-    // await waitFor(() => screen.getAllByTestId(/episode/i))
-
-    // expect(screen.getAllByTestId(/episode/i)).toHaveLength(3);
-
-});
+    expect(episodes).toHaveLength(3);
+})
