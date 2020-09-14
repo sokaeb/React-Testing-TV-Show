@@ -129,7 +129,7 @@ const showData = {
 
   jest.mock('./api/fetchShow');
 // console.log(mockFetchShows)
-mockFetchShows.mockResolvedValueOnce({showData})
+mockFetchShows.mockResolvedValue({showData})
 
 test('Renders without errors', () => {
     render(<App />);
@@ -139,14 +139,17 @@ test('Render episodes when API is called', async () => {
     // mockFetchShows.mockResolvedValueOnce(showData)
     render(<App />);
 
-    const movieTitle = screen.getByText(/stranger things/i)
+    // await waitFor(() => screen.findAllByText(/stranger things/i))
     
-    // const dropdown = screen.queryByDisplayValue(/select a season/i)
+    const dropdown = await waitFor(() => screen.queryAllByDisplayValue(/select a season/i));
+   
+    userEvent.click(dropdown);
 
-    // userEvent.click(dropdown);
+    // const season1= await screen.findByText(/season 1/i);
+    // userEvent.click(season1);
 
-    // await waitFor(() => screen.getAllByTestId(/episode/i))
+    // const ep1 = await screen.findAllByText(/chapter one/i);
+    // expect(ep1[0]).toBeVisible();
 
-    // expect(screen.getAllByTestId(/episode/i)).toHaveLength(3);
 
 });
