@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
 import { fetchShow as mockFetchShows } from './api/fetchShow';
@@ -132,20 +132,25 @@ const showData = {
 mockFetchShows.mockResolvedValue({showData})
 
 test('Renders without errors', () => {
-    render(<App />);
+    render(<App />)
 });
 
 test('Render episodes when API is called', async () => {
     // mockFetchShows.mockResolvedValueOnce(showData)
     render(<App />);
 
-    // await waitFor(() => screen.findAllByText(/stranger things/i))
+    // screen.findAllByText(/stranger things/i) // this passes without the await. With the await, must do queryAllByText to pass
     
-    const dropdown = await waitFor(() => screen.queryAllByDisplayValue(/select a season/i));
-   
-    userEvent.click(dropdown);
+    await waitFor(() => screen.queryAllByText(/stranger things/i))
+    
+   const dropdown = await waitFor(() => screen.queryByText(/select a season/i));
 
-    // const season1= await screen.findByText(/season 1/i);
+   await waitFor(() => expect(mockFetchShows).toHaveBeenCalledTimes(2))
+
+  //  await waitFor(() => fireEvent.click(dropdown));
+  // await waitFor(() => userEvent.click(dropdown));
+
+    // const season1 = await screen.findByText(/season 1/i);
     // userEvent.click(season1);
 
     // const ep1 = await screen.findAllByText(/chapter one/i);

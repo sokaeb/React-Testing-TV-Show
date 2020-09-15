@@ -21,12 +21,10 @@ export default function App() {
           // console.log(res.data)
         setShow(res.data);
         setSeasons(formatSeasons(res.data._embedded.episodes));
-        // return setSeasons(formatSeasons(res.data._embedded.episodes));
         })
         .catch(err => {
           console.error(err)
         });
-    
   }, []);
 
   const handleSelect = e => {

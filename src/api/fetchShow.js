@@ -7,7 +7,7 @@ export const fetchShow = () => {
       )
       .then(res => {
           // console.log(res.data._embedded)
-        return res
+        return res.data
       })
       .catch(err => {
           console.error("error fetching data from api, err: ", err.message)
