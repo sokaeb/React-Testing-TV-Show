@@ -1,5 +1,6 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/dom'
 import userEvent from '@testing-library/user-event';
 import App from './App';
 import { fetchShow as mockFetchShows } from './api/fetchShow';
@@ -129,32 +130,27 @@ const showData = {
 
   jest.mock('./api/fetchShow');
 // console.log(mockFetchShows)
-mockFetchShows.mockResolvedValue({showData})
+// mockFetchShows.mockResolvedValue({showData})
 
 test('Renders without errors', () => {
+  mockFetchShows.mockResolvedValueOnce({showData});
     render(<App />)
 });
 
 test('Render episodes when API is called', async () => {
-    // mockFetchShows.mockResolvedValueOnce(showData)
+    mockFetchShows.mockResolvedValueOnce(showData);
     render(<App />);
 
-    // screen.findAllByText(/stranger things/i) // this passes without the await. With the await, must do queryAllByText to pass
-    
-    await waitFor(() => screen.queryAllByText(/stranger things/i))
-    
-   const dropdown = await waitFor(() => screen.queryByText(/select a season/i));
+    // wait for component to render on screen with dropdown then click on it
+   const dropdown = await waitFor(() => screen.getByText(/select a season/i))
+    userEvent.click(dropdown);
 
-   await waitFor(() => expect(mockFetchShows).toHaveBeenCalledTimes(2))
+    // on clicked dropdown, find season 1 then click on it
+   const season1 = screen.getByText(/season 1/i);
+   userEvent.click(season1);
 
-  //  await waitFor(() => fireEvent.click(dropdown));
-  // await waitFor(() => userEvent.click(dropdown));
-
-    // const season1 = await screen.findByText(/season 1/i);
-    // userEvent.click(season1);
-
-    // const ep1 = await screen.findAllByText(/chapter one/i);
-    // expect(ep1[0]).toBeVisible();
-
+   // expect there to be rendered 3 episodes on page (3 is the number in the mockData)
+  const episodes = screen.getAllByText(/episode/i);
+    expect(episodes).toHaveLength(3);
 
 });
